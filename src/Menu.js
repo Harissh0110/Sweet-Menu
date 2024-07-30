@@ -30,7 +30,7 @@ const SweetBoxes = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/sweetboxes")
+      .get("https://sweets-admin-server-hh64.vercel.app/api/sweets/getdefaultsweet")
       .then((response) => {
         setSweetBoxes(response.data);
       })
@@ -76,7 +76,7 @@ const SweetBoxes = () => {
     };
 
     axios
-      .post("http://localhost:5000/sweetboxes", newMenu)
+      .post("https://sweets-admin-server-hh64.vercel.app/api/sweets", newMenu)
       .then((response) => {
         console.log("Sweet box added:", response.data);
         setSweetBoxes([...sweetBoxes, response.data]);
@@ -143,6 +143,22 @@ const SweetBoxes = () => {
       const updatedBox = updatedSweetBoxes[boxIndex];
       handleUpdate(updatedBox.boxtype, updatedBox.sweetweight, updatedBox);
     }
+  };
+
+  const handleDeleteSweetItemForNewForm = (index) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this sweet item?");
+    if (confirmDelete) {
+      const updatedFields = [...newSweetFields];
+      updatedFields.splice(index, 1);
+      setNewSweetFields(updatedFields);
+    }
+  };
+
+  const handleAddNewSweetFieldForNewForm = () => {
+    setNewSweetFields([
+      ...newSweetFields,
+      { sweetname: "", sweetquantity: "", sweetgram: "" },
+    ]);
   };
 
   // Filter sweet boxes based on selected menu and box type
@@ -347,6 +363,7 @@ const SweetBoxes = () => {
 
       <div>
         <Button
+        sx={{m:2}}
           variant="contained"
           color="primary"
           onClick={() => setShowNewMenuForm(true)}
@@ -436,16 +453,31 @@ const SweetBoxes = () => {
                     }
                     fullWidth
                   />
+                  <IconButton
+                    type="button"
+                    color="secondary"
+                    aria-label="remove sweet"
+                    onClick={() => handleDeleteSweetItemForNewForm(index)}
+                  >
+                    <RemoveCircleOutlineIcon />
+                  </IconButton>
                 </Box>
               </div>
             ))}
+            <IconButton
+              type="button"
+              color="primary"
+              aria-label="add sweet"
+              onClick={handleAddNewSweetFieldForNewForm}
+            >
+              <AddCircleOutlineIcon />
+            </IconButton>
             <ButtonGroup
               disableElevation
               variant="contained"
               aria-label="Add sweet button group"
-              sx={{ mt: 2 }}
             >
-              <Button onClick={handleCreateNewMenu}>Add Sweet Box</Button>
+              <Button onClick={handleCreateNewMenu} sx={{mr:2}}>Add Sweet Box</Button>
               <Button onClick={() => setShowNewMenuForm(false)}>Cancel</Button>
             </ButtonGroup>
           </div>
